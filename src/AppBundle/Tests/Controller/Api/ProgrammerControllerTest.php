@@ -16,10 +16,18 @@ class ProgrammerControllerTest extends ApiTestCase{
       'avatarNumber' => 5,
       'tagLine' => 'a test dev!'
     );
+    
+    $token = $this->getService('lexik_jwt_authentication.encoder')
+      ->encode([
+        'username' => 'weaverryan'
+      ]); 
 
     // 1) Create a programmer resource
     $response = $this->client->post('/api/programmers', [
-      'body' => json_encode($data)
+      'body' => json_encode($data),
+      'headers' => [
+        'Authorization' => 'Bearer '.$token
+      ]
     ]);
 
     $this->assertEquals(201, $response->getStatusCode());
