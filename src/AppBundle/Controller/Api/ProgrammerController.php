@@ -22,6 +22,8 @@ class ProgrammerController extends BaseController {
    * @Method("POST")
    */
   public function newAction(Request $request) {
+    $this->denyAccessUnlessGranted('ROLE_USER');
+    
     $programmer = new Programmer();
     $form = $this->createForm(ProgrammerType::class, $programmer);
     $this->processForm($request, $form);

@@ -10,16 +10,24 @@ class ProgrammerControllerTest extends ApiTestCase{
     $this->createUser('weaverryan');
   }
 
-  public function testPOST(){
+  public function testPOSTProgrammerWorks(){
     $data = array(
       'nickname' => 'ObjectOrienter',
       'avatarNumber' => 5,
       'tagLine' => 'a test dev!'
     );
+    
+    $token = $this->getService('lexik_jwt_authentication.encoder')
+      ->encode([
+        'username' => 'weaverryan'
+      ]); 
 
     // 1) Create a programmer resource
     $response = $this->client->post('/api/programmers', [
-      'body' => json_encode($data)
+      'body' => json_encode($data),
+      'headers' => [
+        'Authorization' => 'Bearer '.$token
+      ]
     ]);
 
     $this->assertEquals(201, $response->getStatusCode());
@@ -229,5 +237,12 @@ EOF;
     $this->asserter()->assertResponsePropertyEquals($response, 'type', 'about:blank');
     $this->asserter()->assertResponsePropertyEquals($response, 'title', 'Not Found');
     $this->asserter()->assertResponsePropertyEquals($response, 'detail', 'No programmer found with nickname "fake"');
+  }
+  
+  public function testRequiresAuthentication(){
+    $response = $this->client->post('/api/programmers', [
+      'body' => '[]'
+    ]);
+    $this->assertEquals(401, $response->getStatusCode());
   }
 }
