@@ -10,7 +10,7 @@ class ProgrammerControllerTest extends ApiTestCase{
     $this->createUser('weaverryan');
   }
 
-  public function testPOST(){
+  public function testPOSTProgrammerWorks(){
     $data = array(
       'nickname' => 'ObjectOrienter',
       'avatarNumber' => 5,
