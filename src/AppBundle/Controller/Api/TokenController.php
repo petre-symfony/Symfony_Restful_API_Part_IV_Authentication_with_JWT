@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TokenController extends BaseController {
   /**
@@ -28,5 +29,15 @@ class TokenController extends BaseController {
     if (!$isValid){
       throw new BadCredentialsException();
     }
+    
+    $token = $this->get('lexik_jwt_authentication.encoder')
+      ->encode([
+        'username' => $user->getUsername(),
+        'exp'      => time() + 3600 // 1 hour expiration  
+      ]); 
+    
+    return new JsonResponse([
+      'token' => $token
+    ]);
   }
 }
