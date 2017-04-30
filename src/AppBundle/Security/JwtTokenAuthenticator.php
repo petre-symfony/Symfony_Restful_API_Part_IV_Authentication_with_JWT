@@ -61,7 +61,7 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator{
   }
   
   public function checkCredentials($credentials, UserInterface $user) {
-    ;
+    return true;
   }
   
   public function onAuthenticationFailure(Request $request, AuthenticationException $exception) {
@@ -69,11 +69,11 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator{
   }
   
   public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey) {
-    ;
+    //do nothing;
   }
   
   public function supportsRememberMe() {
-    ;
+    return false;
   }
   
   public function start(Request $request, AuthenticationException $authException = null) {
