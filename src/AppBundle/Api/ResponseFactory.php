@@ -2,6 +2,7 @@
 namespace AppBundle\Api;
 
 use AppBundle\Api\ApiProblem;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ResponseFactory {
   public function createResponse(ApiProblem $apiProblem){

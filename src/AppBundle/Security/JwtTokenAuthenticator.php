@@ -14,6 +14,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use AppBundle\Api\ApiProblem;
+use AppBundle\Api\ResponseFactory;
 
 class JwtTokenAuthenticator extends AbstractGuardAuthenticator{
   /**
@@ -26,9 +27,16 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator{
    * @var EntityManager 
    */
   private $em;
-  public function __construct(JWTEncoderInterface $jwtEncoder, EntityManager $em) {
+  
+  /**
+   *
+   * @var ResponseFactory 
+   */
+  private $responseFactory;
+  public function __construct(JWTEncoderInterface $jwtEncoder, EntityManager $em,ResponseFactory $responseFactory) {
     $this->jwtEncoder = $jwtEncoder;
     $this->em = $em;
+    $this->responseFactory = $responseFactory;
   }
 
 
@@ -83,6 +91,6 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator{
     $message = $authException ? $authException->getMessageKey() : 'Missing Credential';
     $apiProblem->set('detail', $message);
     
-    return new JsonResponse($apiProblem->toArray(), 401);
+    return $this->responseFactory->createResponse($apiProblem);
   }
 }
