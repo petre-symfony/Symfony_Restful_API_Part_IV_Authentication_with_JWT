@@ -13,6 +13,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use AppBundle\Api\ApiProblem;
 
 class JwtTokenAuthenticator extends AbstractGuardAuthenticator{
   /**
@@ -78,8 +79,10 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator{
   }
   
   public function start(Request $request, AuthenticationException $authException = null) {
-    return new JsonResponse([
-      'error' => 'Authentication required'       
-    ], 401);
+    $apiProblem = new ApiProblem(401);
+    $message = $authException ? $authException->getMessageKey() : 'Missing Credential';
+    $apiProblem->set('detail', $message);
+    
+    return new JsonResponse($apiProblem->toArray(), 401);
   }
 }
