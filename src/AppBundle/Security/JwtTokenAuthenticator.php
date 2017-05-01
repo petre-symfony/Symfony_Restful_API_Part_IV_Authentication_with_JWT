@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
@@ -75,7 +76,7 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator{
   }
   
   public function onAuthenticationFailure(Request $request, AuthenticationException $exception) {
-    ;
+    return new Response('Hello!', 401);
   }
   
   public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey) {
