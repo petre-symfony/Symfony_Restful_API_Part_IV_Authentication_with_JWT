@@ -4,6 +4,7 @@ namespace AppBundle\EventListener;
 
 use AppBundle\Api\ApiProblem;
 use AppBundle\Api\ApiProblemException;
+use AppBundle\Api\ResponseFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -14,10 +15,12 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 class ApiExceptionSubscriber implements EventSubscriberInterface {
   private $debug;
   private $logger;
+  private $responseFactory;
 
-  public function __construct($debug, LoggerInterface $logger){
+  public function __construct($debug, LoggerInterface $logger, ResponseFactory $responseFactory){
     $this->debug = $debug;
     $this->logger = $logger;
+    $this->responseFactory = $responseFactory;
   }
 
   public function onKernelException(GetResponseForExceptionEvent $event){
@@ -56,7 +59,9 @@ class ApiExceptionSubscriber implements EventSubscriberInterface {
         $apiProblem->set('detail', $e->getMessage());
       }
     }
-
+    
+    $response = $this->responseFactory->createResponse($apiProblem);
+    
     $event->setResponse($response);
   }
 
