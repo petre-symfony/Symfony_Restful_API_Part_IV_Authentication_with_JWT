@@ -22,6 +22,8 @@ class ProgrammerController extends BaseController {
    * @Method("POST")
    */
   public function newAction(Request $request) {
+    $this->denyAccessUnlessGranted('ROLE_USER');
+    
     $programmer = new Programmer();
     $form = $this->createForm(ProgrammerType::class, $programmer);
     $this->processForm($request, $form);
@@ -30,7 +32,7 @@ class ProgrammerController extends BaseController {
       $this->throwApiProblemValidationException($form);
     }
 
-    $programmer->setUser($this->findUserByUsername('weaverryan'));
+    $programmer->setUser($this->getUser());
 
     $em = $this->getDoctrine()->getManager();
     $em->persist($programmer);
