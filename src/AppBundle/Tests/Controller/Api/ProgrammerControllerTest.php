@@ -221,7 +221,7 @@ class ProgrammerControllerTest extends ApiTestCase{
     $this->asserter()->assertResponsePropertyExists($response, 'errors.nickname');
     $this->asserter()->assertResponsePropertyEquals($response, 'errors.nickname[0]', 'Please enter a clever nickname');
     $this->asserter()->assertResponsePropertyDoesNotExist($response, 'errors.avatarNumber');
-    $this->assertEquals('application/problem+json', $response->getHeader('Content-Type'));
+    $this->assertEquals('application/problem+json', $response->getHeader('Content-Type')[0]);
   }
 
   public function testInvalidJson(){
@@ -248,7 +248,7 @@ EOF;
     ]);
 
     $this->assertEquals(404, $response->getStatusCode());
-    $this->assertEquals('application/problem+json', $response->getHeader('Content-Type'));
+    $this->assertEquals('application/problem+json', $response->getHeader('Content-Type')[0]);
     $this->asserter()->assertResponsePropertyEquals($response, 'type', 'about:blank');
     $this->asserter()->assertResponsePropertyEquals($response, 'title', 'Not Found');
     $this->asserter()->assertResponsePropertyEquals($response, 'detail', 'No programmer found with nickname "fake"');
@@ -257,6 +257,7 @@ EOF;
   public function testRequiresAuthentication(){
     $response = $this->client->post('/api/programmers', [
       'body' => '[]'
+      //do not send authorization header
     ]);
     $this->assertEquals(401, $response->getStatusCode());
   }
