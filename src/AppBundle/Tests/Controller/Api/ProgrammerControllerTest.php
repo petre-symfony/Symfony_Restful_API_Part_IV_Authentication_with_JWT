@@ -272,5 +272,6 @@ EOF;
     ]);
     $this->assertEquals(401, $response->getStatusCode());
     $this->assertEquals('application/problem+json', $response->getHeader('Content-Type')[0]);
+    $this->debugResponse($response);
   }
 }
